@@ -1,0 +1,226 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Sreemaee21/Learning/blob/main/increase%20accuracy\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "SeAYKDJR8nZq"
+      },
+      "outputs": [],
+      "source": [
+        "import numpy as np\n",
+        "from tensorflow import keras\n",
+        "from tensorflow.keras import layers"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Model / data parameters\n",
+        "num_classes = 100\n",
+        "input_shape = (32, 32, 3)\n",
+        "\n",
+        "# Load the data and split it between train and test sets\n",
+        "(x_train, y_train), (x_test, y_test) = keras.datasets.cifar100.load_data()\n",
+        "\n",
+        "print(\"x_train shape:\", x_train.shape)\n",
+        "print(x_train.shape[0], \"train samples\")\n",
+        "print(x_test.shape[0], \"test samples\")\n",
+        "\n",
+        "# convert class vectors to binary class matrices\n",
+        "y_train = keras.utils.to_categorical(y_train, num_classes)\n",
+        "y_test = keras.utils.to_categorical(y_test, num_classes)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "wmhlVwWX8vdM",
+        "outputId": "25838312-6a60-434e-e1cc-4a8a84b28218"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Downloading data from https://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz\n",
+            "169001437/169001437 [==============================] - 3s 0us/step\n",
+            "x_train shape: (50000, 32, 32, 3)\n",
+            "50000 train samples\n",
+            "10000 test samples\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "model = keras.Sequential(\n",
+        "    [   keras.Input(shape=input_shape),\n",
+        "        layers.Conv2D(32, kernel_size=(3, 3), activation='relu'),\n",
+        "        layers.MaxPooling2D(pool_size=(2, 2)),\n",
+        "        layers.Conv2D(64, kernel_size=(3, 3), activation='relu'),\n",
+        "        layers.MaxPooling2D(pool_size=(2, 2)),\n",
+        "        layers.Conv2D(128, kernel_size=(3, 3), activation='relu'),\n",
+        "        layers.MaxPooling2D(pool_size=(2, 2)),\n",
+        "        layers.Conv2D(256, kernel_size=(3, 3), activation='relu'),\n",
+        "        layer.MazPooling2D(pool_size)\n",
+        "        layers.Flatten(),\n",
+        "        layers.Dense(500, activation=\"relu\"),\n",
+        "        layers.Dropout(0.5),\n",
+        "        layers.Dense(num_classes, activation=\"softmax\"),\n",
+        "    ]\n",
+        ")\n",
+        "\n",
+        "model.summary()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "LsBph_Y18vm_",
+        "outputId": "5a643271-6714-4dd1-9256-c7892170ee32"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Model: \"sequential_6\"\n",
+            "_________________________________________________________________\n",
+            " Layer (type)                Output Shape              Param #   \n",
+            "=================================================================\n",
+            " conv2d_1 (Conv2D)           (None, 30, 30, 32)        896       \n",
+            "                                                                 \n",
+            " max_pooling2d (MaxPooling2D  (None, 15, 15, 32)       0         \n",
+            " )                                                               \n",
+            "                                                                 \n",
+            " conv2d_2 (Conv2D)           (None, 13, 13, 64)        18496     \n",
+            "                                                                 \n",
+            " max_pooling2d_1 (MaxPooling  (None, 6, 6, 64)         0         \n",
+            " 2D)                                                             \n",
+            "                                                                 \n",
+            " conv2d_3 (Conv2D)           (None, 4, 4, 128)         73856     \n",
+            "                                                                 \n",
+            " max_pooling2d_2 (MaxPooling  (None, 2, 2, 128)        0         \n",
+            " 2D)                                                             \n",
+            "                                                                 \n",
+            " flatten_6 (Flatten)         (None, 512)               0         \n",
+            "                                                                 \n",
+            " dense_12 (Dense)            (None, 500)               256500    \n",
+            "                                                                 \n",
+            " dropout_6 (Dropout)         (None, 500)               0         \n",
+            "                                                                 \n",
+            " dense_13 (Dense)            (None, 100)               50100     \n",
+            "                                                                 \n",
+            "=================================================================\n",
+            "Total params: 399,848\n",
+            "Trainable params: 399,848\n",
+            "Non-trainable params: 0\n",
+            "_________________________________________________________________\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "batch_size = 128\n",
+        "epochs = 5\n",
+        "\n",
+        "model.compile(loss=\"categorical_crossentropy\", optimizer=\"adam\", metrics=[\"accuracy\"])\n",
+        "\n",
+        "model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, validation_split=0.1)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "c9hm7yMQ8vvB",
+        "outputId": "ac5d129c-edc7-4c95-8746-1c7bce121228"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Epoch 1/5\n",
+            "352/352 [==============================] - 66s 186ms/step - loss: 4.4557 - accuracy: 0.0615 - val_loss: 3.8230 - val_accuracy: 0.1258\n",
+            "Epoch 2/5\n",
+            "352/352 [==============================] - 65s 184ms/step - loss: 3.6990 - accuracy: 0.1416 - val_loss: 3.4496 - val_accuracy: 0.1890\n",
+            "Epoch 3/5\n",
+            "352/352 [==============================] - 68s 192ms/step - loss: 3.4036 - accuracy: 0.1890 - val_loss: 3.2683 - val_accuracy: 0.2118\n",
+            "Epoch 4/5\n",
+            "352/352 [==============================] - 65s 184ms/step - loss: 3.2013 - accuracy: 0.2257 - val_loss: 3.1008 - val_accuracy: 0.2496\n",
+            "Epoch 5/5\n",
+            "352/352 [==============================] - 65s 185ms/step - loss: 3.0476 - accuracy: 0.2529 - val_loss: 2.9904 - val_accuracy: 0.2730\n"
+          ]
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<keras.callbacks.History at 0x7fb4d6acf6d0>"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 24
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "score = model.evaluate(x_test, y_test, verbose=0)\n",
+        "print(\"Test loss:\", score[0])\n",
+        "print(\"Test accuracy:\", score[1])"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "3HIYJDbT8v2_",
+        "outputId": "f8811060-329e-49ad-b02c-d88c3f4f88c8"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Test loss: 2.9818358421325684\n",
+            "Test accuracy: 0.2784000039100647\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
